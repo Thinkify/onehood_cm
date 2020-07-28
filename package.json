@@ -1,0 +1,14 @@
+{
+  "name": "onehood-cm",
+  "version": "1.0.0",
+  "description": "This application manages clusters from different cloud service providers. Services are Creating, deleting and connecting to clusters.",
+  "main": "aws.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Thinkify",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.720.0"
+  }
+}

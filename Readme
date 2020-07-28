@@ -1,0 +1,9 @@
+// Author - Pavan Sreenivasa 
+AWS Cluster management methods
+
+Create Cluster  -> createInstance(ami-id, instance-type, instance-name(prefixed with onehood_cm)) -> returns cluster id
+Stop Cluster -> stopCulster(cluster-id);
+Start Cluster -> startCluster(cluster-id);
+Reboot Cluster -> rebootCluster(cluster-id);
+Describe Cluster -> describeCluster(cluster-id);
+
