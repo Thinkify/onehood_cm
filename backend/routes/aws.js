@@ -1,50 +1,63 @@
 var express = require('express');
-var router = express.Router();
+const bodyParser = require('body-parser');
 const aws = require('../../aws');
+
+var router = express.Router();
+router.use(bodyParser.urlencoded({ extended: true }));
+
+
 /* GET home page. */
-router.get('/startcluster/:cluster_id', function (req, res, next) {
-    if (req.params.cluster_id == null || req.params.cluster_id == "") {
-        res.status(400).json({ "Status": "Request failure", "Message": "Missing cluster ID" })
+router.post('/createcluster', function (req, res, next) {
+    if (req.body) {
+        aws.createInstance(req.body.cluster_type, req.body.cluster_name, req.body.cluster_ami).then((aws_response) => {
+            console.log("Aws response", aws_response);
+            res.status(200).json(aws_response);
+        })
     } else {
+        res.status(412).json({ "Message": "The pre condition given in the request evaluated to false by the server." })
+    }
+})
+
+router.get('/startcluster/:cluster_id', function (req, res, next) {
+    if (req.params.cluster_id) {
         aws.startInstance(req.params.cluster_id).then((aws_response) => {
             console.log("Aws response", aws_response);
             res.status(200).json(aws_response);
         });
     }
+    else {
+        res.status(412).json({ "Message": "The pre condition given in the request evaluated to false by the server." })
+    }
 
 });
 
 router.get('/stopcluster/:cluster_id', function (req, res, next) {
-    if (req.params.cluster_id == null || req.params.cluster_id == "") {
-        res.status(400).json({ "Status": "Request failure", "Message": "Missing cluster ID" })
-    } else {
+    if (req.params.cluster_id) {
         aws.stopInstance(req.params.cluster_id).then((aws_response) => {
             console.log("Aws response", aws_response);
             res.status(200).json(aws_response);
         })
+    } else {
+        res.status(412).json({ "Message": "The pre condition given in the request evaluated to false by the server." })
     }
 })
 
 router.get('/rebootcluster/:cluster_id', function (req, res, next) {
-    if (req.params.cluster_id == null || req.params.cluster_id == "") {
-        res.status(400).json({ "Status": "Request failure", "Message": "Missing cluster ID" })
-    } else {
-        aws.rebootInstance(req.params.cluster_id).then((aws_response) => {
+    if (req.params.cluster_id) {
+        aws.rebootInstance(req.body.cluster_id).then((aws_response) => {
             console.log("Aws response", aws_response);
             res.status(200).json(aws_response);
         })
+    } else {
+        res.status(412).json({ "Message": "The pre condition given in the request evaluated to false by the server." })
     }
 })
 
 router.get('/describeclusters', function (req, res, next) {
-    if (req.params.cluster_id == null || req.params.cluster_id == "") {
-        res.status(400).json({ "Status": "Request failure", "Message": "Missing cluster ID" })
-    } else {
-        aws.describeInstance().then((aws_response) => {
-            console.log("Aws response", aws_response);
-            res.status(200).json(aws_response);
-        })
-    }
+    aws.describeInstance().then((aws_response) => {
+        console.log("Aws response", aws_response);
+        res.status(200).json(aws_response);
+    })
 })
 
 module.exports = router;
