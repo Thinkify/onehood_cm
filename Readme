@@ -7,3 +7,4 @@ Start Cluster -> startCluster(cluster-id);
 Reboot Cluster -> rebootCluster(cluster-id);
 Describe Cluster -> describeCluster(cluster-id);
 
+ami-0ff8a91507f77f867

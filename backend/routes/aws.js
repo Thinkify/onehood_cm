@@ -1,6 +1,6 @@
 var express = require('express');
 const bodyParser = require('body-parser');
-const aws = require('../../aws');
+const aws = require('../../middleware/aws');
 
 var router = express.Router();
 router.use(bodyParser.urlencoded({ extended: true }));

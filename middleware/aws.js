@@ -12,22 +12,22 @@ AWS.config.setPromisesDependency();
 //create ec2 service object, any further operations with respect to ec2 can be done using this object.
 var ec2 = new AWS.EC2({ apiVersion: '2016-11-15' });
 
-function createInstance() {
+async function createInstance(cluster_type, cluster_name, ami_id) {
+    var res_data;
     // AMI is amzn-ami-2011.09.1.x86_64-ebs. configuration options for instance.
     var instanceParams = {
-        ImageId: 'ami-0ff8a91507f77f867',
-        InstanceType: 't2.micro',
+        ImageId: ami_id,
+        InstanceType: cluster_type,
         MinCount: 1,
         MaxCount: 1
     };
 
     // Create a promise on an EC2 service object
-    var instancePromise = ec2.runInstances(instanceParams).promise();
-
     // Handle promise's fulfilled/rejected states
-    instancePromise.then(
+    await ec2.runInstances(instanceParams).promise().then(
         function (data) {
             console.log(data);
+            res_data = data;
             var instanceId = data.Instances[0].InstanceId;
             console.log("Created instance", instanceId);
             // Add tags to the instance
@@ -35,24 +35,26 @@ function createInstance() {
                 Resources: [instanceId], Tags: [
                     {
                         Key: 'Name',
-                        Value: 'OneHood_CM_3'
+                        Value: 'OneHood-CM'+ cluster_name
                     }
                 ]
             };
             // Create a promise on an EC2 service object
-            var tagPromise = ec2.createTags(tagParams).promise();
             // Handle promise's fulfilled/rejected states
-            tagPromise.then(
+    ec2.createTags(tagParams).promise().then(
                 function (data) {
                     console.log("Instance tagged");
                 }).catch(
                     function (err) {
+                        res_data = err.stack;
                         console.error(err, err.stack);
                     });
         }).catch(
             function (err) {
+                res_data = err.stack;
                 console.error(err, err.stack);
             });
+    return res_data;
 }
 
 async function startInstance(instance_id) {
