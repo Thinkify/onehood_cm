@@ -1,29 +1,32 @@
-import React from 'react';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import PeopleIcon from '@material-ui/icons/People';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import LayersIcon from '@material-ui/icons/Layers';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import ImageResolver from './ImageResolver';
-import awslogo from '../asset/awslogo.png'
-import gcplogo from '../asset/gcplogo.png'
+import React from "react";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import PeopleIcon from "@material-ui/icons/People";
+import BarChartIcon from "@material-ui/icons/BarChart";
+import LayersIcon from "@material-ui/icons/Layers";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import ImageResolver from "./ImageResolver";
+import awslogo from "../asset/awslogo.png";
+import gcplogo from "../asset/gcplogo.png";
+import Button from "@material-ui/core/Button";
+import CreateCluster from "./CreateCluster";
+import ModalComponent from "./ModalComponent";
 
 export const mainListItems = (
   <div>
     <ListItem button>
       <ListItemIcon>
-        <ImageResolver image={awslogo}/>
+        <ImageResolver image={awslogo} />
       </ListItemIcon>
       <ListItemText primary="AWS" />
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-      <DashboardIcon/>
+        <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="GCP" />
     </ListItem>
@@ -69,5 +72,8 @@ export const secondaryListItems = (
       </ListItemIcon>
       <ListItemText primary="Year-end sale" />
     </ListItem>
+    <div>
+      <ModalComponent form={<CreateCluster />}></ModalComponent>
+    </div>
   </div>
 );
