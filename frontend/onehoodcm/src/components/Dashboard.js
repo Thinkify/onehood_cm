@@ -17,13 +17,15 @@ import Paper from "@material-ui/core/Paper";
 import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import { mainListItems, secondaryListItems } from "./NavList";
 import Chart from "./Chart";
 import Deposits from "./Deposits";
 import ClusterList from "./ClusterList";
-import CreateCluster from "./CreateCluster";
 import Skeleton from "@material-ui/lab/Skeleton";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ModalComponent from "./ModalComponent";
+import Snackbar from "@material-ui/core/Snackbar";
+import CloseIcon from "@material-ui/icons/Close";
 
 function Copyright() {
   return (
@@ -76,7 +78,8 @@ const useStyles = makeStyles((theme) => ({
     display: "none",
   },
   title: {
-    flexGrow: 1,
+    justifyContent: "flex-start",
+    flexGrow: 2,
   },
   drawerPaper: {
     position: "relative",
@@ -123,7 +126,8 @@ export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const [clusterData, dataSet] = React.useState();
-  const [count, setCount] = React.useState(0);
+  const [snackOpen, setSnackOpen] = React.useState(false);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -131,19 +135,34 @@ export default function Dashboard() {
     setOpen(false);
   };
 
-  React.useEffect(() => {
-    function getClusterData() {
-      fetch("http://localhost:5000/awsclusterservice/describeclusters")
-        .then((res) => res.json())
-        .then((result) => {
-          console.log(result);
-          dataSet(result);
-        })
-        .catch((err) => console.log(err.stack));
-    }
-    getClusterData();
+  const handleSnackOpen = () => {
+    setSnackOpen(true);
+  };
 
-    setCount(5);
+  const handleSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackOpen(false);
+  };
+
+  function getClusterData(clusterCreate = false) {
+    fetch("http://localhost:5000/awsclusterservice/describeclusters")
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result);
+        dataSet(result);
+      })
+      .catch((err) => console.log(err.stack));
+
+    if (clusterCreate) {
+      handleSnackOpen();
+    }
+  }
+
+  React.useEffect(() => {
+    getClusterData();
   }, []);
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -177,9 +196,16 @@ export default function Dashboard() {
           >
             OneHood
           </Typography>
-          <IconButton color="inherit">
+
+          {/* <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
+            </Badge>
+          </IconButton> */}
+          <ModalComponent onSubmit={getClusterData} />
+          <IconButton color="inherit">
+            <Badge badgeContent={4} color="secondary">
+              <AccountCircleIcon />
             </Badge>
           </IconButton>
         </Toolbar>
@@ -209,7 +235,10 @@ export default function Dashboard() {
             <Grid item xs={12}>
               <Paper className={classes.paper}>
                 {clusterData != null ? (
-                  <ClusterList clusterData={clusterData} />
+                  <ClusterList
+                    clusterData={clusterData}
+                    onPressMenuItem={getClusterData}
+                  />
                 ) : (
                   <Skeleton variant="rect" height={300} />
                 )}
@@ -239,6 +268,28 @@ export default function Dashboard() {
           </Box>
         </Container>
       </main>
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={snackOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackClose}
+        message="Cluster Created"
+        action={
+          <React.Fragment>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleSnackClose}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
     </div>
   );
 }

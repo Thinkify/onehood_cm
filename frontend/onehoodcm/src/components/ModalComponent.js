@@ -6,7 +6,8 @@ import Fade from "@material-ui/core/Fade";
 import IconButton from "@material-ui/core/IconButton";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
-
+import Button from "@material-ui/core/Button";
+import CreateCluster from "./CreateCluster";
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
@@ -36,14 +37,15 @@ export default function ModalComponent(props) {
 
   return (
     <div>
-      <IconButton
-        color="primary"
-        aria-label="Add Cluster"
-        component="span"
+      <Button
+        size="small"
+        variant="contained"
+        color="secondary"
+        startIcon={<AddCircleIcon />}
         onClick={handleOpen}
       >
-        <AddCircleIcon />
-      </IconButton>
+        Create Cluster
+      </Button>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -61,7 +63,10 @@ export default function ModalComponent(props) {
             <IconButton onClick={handleClose} style={{ float: "right" }}>
               <CancelIcon />
             </IconButton>
-            {props.form}
+            <CreateCluster
+              onPressButton={handleClose}
+              onCreateCluster={props.onSubmit}
+            />
           </div>
         </Fade>
       </Modal>

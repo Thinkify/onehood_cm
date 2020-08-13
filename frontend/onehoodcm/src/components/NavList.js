@@ -3,42 +3,38 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import PeopleIcon from "@material-ui/icons/People";
-import BarChartIcon from "@material-ui/icons/BarChart";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import ImageResolver from "./ImageResolver";
 import awslogo from "../asset/awslogo.png";
 import gcplogo from "../asset/gcplogo.png";
-import Button from "@material-ui/core/Button";
-import CreateCluster from "./CreateCluster";
-import ModalComponent from "./ModalComponent";
+import azurelogo from "../asset/azurelogo.png";
+
+import dockerlogo from "../asset/dockerlogo.png";
 
 export const mainListItems = (
   <div>
     <ListItem button>
       <ListItemIcon>
-        <ImageResolver image={awslogo} />
+        <ImageResolver image={awslogo} fluid />
       </ListItemIcon>
       <ListItemText primary="AWS" />
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <DashboardIcon />
+        <ImageResolver image={gcplogo} />
       </ListItemIcon>
       <ListItemText primary="GCP" />
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <PeopleIcon />
+        <ImageResolver image={azurelogo} />
       </ListItemIcon>
       <ListItemText primary="Azure" />
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <BarChartIcon />
+        <ImageResolver image={dockerlogo} />
       </ListItemIcon>
       <ListItemText primary="Docker" />
     </ListItem>
@@ -72,8 +68,9 @@ export const secondaryListItems = (
       </ListItemIcon>
       <ListItemText primary="Year-end sale" />
     </ListItem>
-    <div>
+    {/* <ListItem button>
       <ModalComponent form={<CreateCluster />}></ModalComponent>
-    </div>
+      <ListItemText primary="Create Cluster" />
+    </ListItem> */}
   </div>
 );

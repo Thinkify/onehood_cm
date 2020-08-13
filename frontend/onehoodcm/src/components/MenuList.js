@@ -1,20 +1,24 @@
-import React, { Component, PureComponent } from "react";
-import Menu, { MenuProps } from "@material-ui/core/Menu";
+import React, { useEffect } from "react";
+import { withStyles } from "@material-ui/core/styles";
+import IconButton from "@material-ui/core/IconButton";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import MenuItem from "@material-ui/core/MenuItem";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import CachedIcon from "@material-ui/icons/Cached";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import MoreIcon from "@material-ui/icons/More";
 
 const StyledMenu = withStyles({
   paper: {
     border: "1px solid #d3d4d5",
   },
 })((props) => (
+  /* Default menu design configuration */
   <Menu
-    elevation={1}
+    elevation={0}
     getContentAnchorEl={null}
     anchorOrigin={{
       vertical: "bottom",
@@ -39,60 +43,119 @@ const StyledMenuItem = withStyles((theme) => ({
   },
 }))(MenuItem);
 
-class MenuList extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      anchorEl: this.props.anchorEl,
-      setAnchorEl: null,
-    };
-  }
-  handleClose = () => {
-    this.setState({ anchorEl: null });
+export default function MenuList(props) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  var refreshIntervalId;
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.anchorEl !== this.props.anchorEl) {
-      this.setState({ anchorEl: this.props.anchorEl });
+  const handleClose = (value) => {
+    var action;
+    if (value === "start") {
+      action = "startcluster";
+    } else if (value === "stop") {
+      action = "stopcluster";
+    } else if (value === "restart") {
+      action = "rebootcluster";
+    } else if (value === "terminate") {
+      action = "terminatecluster";
+    } else {
+      setAnchorEl(null);
+      return;
     }
-  }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.anchorEl !== this.props.anchorEl) {
-      this.setState({ anchorEl: this.props.anchorEl });
+    manageCluster(action, props.clusterId);
+    console.log(props.clusterId);
+    setAnchorEl(null);
+  };
+
+  useEffect(() => {
+    if (
+      props.state === "running" ||
+      props.state === "stopped" ||
+      props.state === "terminated"
+    ) {
+      console.log("Code inside useEffect, state now = ", props.state);
+      clearInterval(refreshIntervalId); /* Not Effective */
     }
-    // this.setState({ anchorEl: this.props.anchorEl });
-  }
+  });
+  /* Leading to infinite API calls */
+  const manageInterval = () => {
+    props.onPressMenuItem();
+    refreshIntervalId = setInterval(function () {
+      console.log("Interval running");
+      props.onPressMenuItem();
+    }, 5000);
+  };
 
-  render() {
-    return (
+  const manageCluster = (action, clusterId) => {
+    console.log("inside managecluster");
+    fetch("http://localhost:5000/awsclusterservice/" + action + "/" + clusterId)
+      .then((res) => res.json())
+      .then((result) => {
+        manageInterval();
+        console.log(result);
+      })
+      .catch((err) => console.log(err.stack));
+  };
+
+  return (
+    <div>
+      {props.state === "terminated" ? (
+        <IconButton onClick={handleClick} disabled>
+          <MoreVertIcon />
+        </IconButton>
+      ) : (
+        <IconButton onClick={handleClick}>
+          <MoreVertIcon />
+        </IconButton>
+      )}
       <StyledMenu
         id="customized-menu"
-        anchorEl={this.state.anchorEl}
-        open={Boolean(this.state.anchorEl)}
-        onClose={Boolean(this.state.anchorEl)}
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
       >
-        <StyledMenuItem>
+        <StyledMenuItem onClick={() => handleClose("details")}>
           <ListItemIcon>
-            <PowerSettingsNewIcon fontSize="small" />
+            <MoreIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="Start" />
+          <ListItemText primary="Details" />
         </StyledMenuItem>
-        <StyledMenuItem>
+        {props.state === "stopped" ? (
+          <StyledMenuItem onClick={() => handleClose("start")}>
+            <ListItemIcon>
+              <PowerSettingsNewIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Start" />
+          </StyledMenuItem>
+        ) : (
+          <StyledMenuItem onClick={() => handleClose("stop")}>
+            <ListItemIcon>
+              <PowerSettingsNewIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Stop" />
+          </StyledMenuItem>
+        )}
+        <StyledMenuItem onClick={() => handleClose("terminate")}>
           <ListItemIcon>
             <DeleteForeverIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText primary="Terminate" />
         </StyledMenuItem>
-        <StyledMenuItem>
+        <StyledMenuItem
+          onClick={() => handleClose("restart")}
+          disabled={props.state === "stopped" ? true : false}
+        >
           <ListItemIcon>
             <CachedIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText primary="Restart" />
         </StyledMenuItem>
       </StyledMenu>
-    );
-  }
+    </div>
+  );
 }
-
-export default MenuList;

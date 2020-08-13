@@ -97,12 +97,29 @@ async function stopInstance(instance_id) {
   return res_data;
 }
 
-// createInstance()
+async function terminateInstance(instance_id) {
+  var params = {
+    InstanceIds: [instance_id],
+  };
+  await ec2
+    .terminateInstances(params)
+    .promise()
+    .then((data) => {
+      res_data = data;
+    })
+    .catch(function (err) {
+      res_data = err;
+    });
+  return res_data;
+}
+
+// rebootInstance("i-0734bcb364657b778");
 
 async function rebootInstance(instance_id) {
   var params = {
     InstanceIds: [instance_id],
-    DryRun: false,
+    // InstancesSet: [instance_id],
+    // DryRun: false,
   };
 
   // Call EC2 to reboot instances
@@ -115,6 +132,7 @@ async function rebootInstance(instance_id) {
     .catch(function (err) {
       res_data = err;
     });
+  console.log(res_data);
   return res_data;
 }
 
@@ -157,6 +175,7 @@ module.exports = {
   stopInstance,
   createInstance,
   rebootInstance,
+  terminateInstance,
   describeKeyPairs,
   describeInstance,
 };

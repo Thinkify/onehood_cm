@@ -1,7 +1,6 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Dashboard from './components/Dashboard'
+import React from "react";
+import "./App.css";
+import Dashboard from "./components/Dashboard";
 function App() {
   return (
     <div className="App">
