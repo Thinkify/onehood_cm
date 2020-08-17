@@ -61,6 +61,8 @@ export default function MenuList(props) {
       action = "rebootcluster";
     } else if (value === "terminate") {
       action = "terminatecluster";
+    } else if (value === "details") {
+      props.onPressDetails();
     } else {
       setAnchorEl(null);
       return;
