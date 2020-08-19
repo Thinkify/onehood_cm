@@ -69,8 +69,10 @@ export default function CreateCluster(props) {
   const [region, setRegion] = useState("us-east-1");
   const [error, setError] = useState();
   const [value, setValue] = React.useState(0);
-  const [quickDelpoyCheck, setQuickDelpoyCheck] = React.useState(false);
+  const [quickDeployCheck, setQuickDeployCheck] = React.useState(false);
   const [quickDeployName, setQuickDeployName] = React.useState();
+  const [quickDeploys, setQuickDeploys] = React.useState();
+  const [selectedQuickDeploy, setSelectedQuickDeploy] = React.useState();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -96,15 +98,49 @@ export default function CreateCluster(props) {
     setRegion(event.target.value);
   };
 
-  const handleQuickDeploy = () => {
-    setQuickDelpoyCheck(!quickDelpoyCheck);
+  const handleQuickDeployChange = (event) => {
+    setSelectedQuickDeploy(event.target.value);
   };
 
-  const handleQuickDeployName = (quickDeployName) => {
-    setQuickDeployName(quickDeployName);
+  const handleQuickDeploy = () => {
+    setQuickDeployCheck(!quickDeployCheck);
+  };
+
+  const handleQuickDeployName = (event) => {
+    setQuickDeployName(event.target.value);
+  };
+
+  const createQuickDeploy = () => {
+    console.log("Inside quick deploy method");
+    var quickDeployHeaders = new Headers();
+    quickDeployHeaders.append(
+      "Content-Type",
+      "application/x-www-form-urlencoded"
+    );
+
+    var urlencodedQuickDeploy = new URLSearchParams();
+    urlencodedQuickDeploy.append("region", region);
+    urlencodedQuickDeploy.append("cluster_type", clusterType);
+    urlencodedQuickDeploy.append("deploy_name", quickDeployName);
+    urlencodedQuickDeploy.append("cluster_ami", ami);
+
+    var requestOptions = {
+      method: "POST",
+      headers: quickDeployHeaders,
+      body: urlencodedQuickDeploy,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:5000/quickdeploy/createquickdeploy", requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
   };
 
   const handleSubmit = () => {
+    if (quickDeployCheck) {
+      createQuickDeploy();
+    }
     if (clusterType != null && clusterName != null && ami != null) {
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -133,8 +169,35 @@ export default function CreateCluster(props) {
     }
 
     props.onPressButton();
-    props.onCreateCluster(true);
+    props.onCreateCluster();
   };
+
+  const getQuickDeploys = () => {
+    var quickDeployHeaders = new Headers();
+    quickDeployHeaders.append(
+      "Content-Type",
+      "application/x-www-form-urlencoded"
+    );
+
+    var requestOptions = {
+      method: "GET",
+      headers: quickDeployHeaders,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:5000/quickdeploy/getquickdeploys", requestOptions)
+      .then((res) => res.json())
+      .then((response) => {
+        console.log(typeof response);
+        setQuickDeploys(response);
+        console.log(response);
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  React.useEffect(() => {
+    getQuickDeploys();
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -284,16 +347,17 @@ export default function CreateCluster(props) {
                 label="Use this configuration for quick deploy"
               />
             </Grid>
-            {quickDelpoyCheck ? (
+            {quickDeployCheck ? (
               <Grid item xs={12}>
-                <TextField
-                  required
-                  id="quickDeployName"
-                  name="Deploy Name"
-                  label="Deploy Name"
-                  onChange={handleQuickDeployName}
-                  fullWidth
-                />
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="standard-adornment-clustername">
+                    Deploy Name*
+                  </InputLabel>
+                  <Input
+                    id="standard-adornment-deployname"
+                    onChange={handleQuickDeployName}
+                  />
+                </FormControl>
               </Grid>
             ) : null}
 
@@ -322,6 +386,31 @@ export default function CreateCluster(props) {
       </TabPanel>
       <TabPanel value={value} index={1}>
         Quick Deploy List
+        <p>
+          <Select
+            labelId="demo-simple-select-placeholder-label-label"
+            id="demo-simple-select-placeholder-label"
+            onChange={handleQuickDeployChange}
+            value="deploy1"
+            fullWidth
+          >
+            {quickDeploys
+              ? quickDeploys.Items.map((items) => (
+                  <MenuItem key={items.deployname.S} value={items.deployname.S}>
+                    {items.deployname.S}
+                  </MenuItem>
+                ))
+              : "fetching data..."}
+          </Select>
+        </p>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<ArrowUpwardIcon />}
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
       </TabPanel>
     </div>
   );
