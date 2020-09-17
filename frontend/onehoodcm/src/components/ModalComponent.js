@@ -43,6 +43,7 @@ export default function ModalComponent(props) {
         color="secondary"
         startIcon={<AddCircleIcon />}
         onClick={handleOpen}
+        style={{ width: "180px" }}
       >
         Create Cluster
       </Button>

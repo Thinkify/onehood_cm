@@ -9,32 +9,44 @@ import ImageResolver from "./ImageResolver";
 import awslogo from "../asset/awslogo.png";
 import gcplogo from "../asset/gcplogo.png";
 import azurelogo from "../asset/azurelogo.png";
+import ModalComponent from "./ModalComponent";
+import Snackbar from "@material-ui/core/Snackbar";
+import CloseIcon from "@material-ui/icons/Close";
+import Button from "@material-ui/core/Button";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import { Link as RouterLink } from "react-router-dom";
+
+import GTranslateTwoToneIcon from "@material-ui/icons/GTranslateTwoTone";
+import AcUnitIcon from "@material-ui/icons/AcUnit";
+import DockIcon from "@material-ui/icons/Dock";
+import WbCloudyIcon from "@material-ui/icons/WbCloudy";
 
 import dockerlogo from "../asset/dockerlogo.png";
 
 export const mainListItems = (
   <div>
+    <ListSubheader inset>Cloud Services</ListSubheader>
     <ListItem button>
       <ListItemIcon>
-        <ImageResolver image={awslogo} fluid />
+        <WbCloudyIcon />
       </ListItemIcon>
       <ListItemText primary="AWS" />
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <ImageResolver image={gcplogo} />
+        <GTranslateTwoToneIcon />
       </ListItemIcon>
       <ListItemText primary="GCP" />
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <ImageResolver image={azurelogo} />
+        <AcUnitIcon />
       </ListItemIcon>
       <ListItemText primary="Azure" />
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <ImageResolver image={dockerlogo} />
+        <DockIcon />
       </ListItemIcon>
       <ListItemText primary="Docker" />
     </ListItem>
@@ -49,28 +61,37 @@ export const mainListItems = (
 
 export const secondaryListItems = (
   <div>
-    <ListSubheader inset>Saved reports</ListSubheader>
+    <ListSubheader inset>Management</ListSubheader>
     <ListItem button>
-      <ListItemIcon>
+      {/* <ListItemIcon>
         <AssignmentIcon />
       </ListItemIcon>
-      <ListItemText primary="Current month" />
+      <ListItemText primary="Current month" /> */}
+      <ModalComponent />
     </ListItem>
     <ListItem button>
-      <ListItemIcon>
+      {/* <ListItemIcon>
         <AssignmentIcon />
       </ListItemIcon>
-      <ListItemText primary="Last quarter" />
+      <ListItemText primary="Last quarter" /> */}
+      <RouterLink to="/releasemanagement" style={{ textDecoration: "none" }}>
+        <Button
+          size="small"
+          variant="contained"
+          color="secondary"
+          startIcon={<ArrowUpwardIcon />}
+          style={{ width: "180px" }}
+          // onClick={handleSubmit}
+        >
+          Release
+        </Button>
+      </RouterLink>
     </ListItem>
-    <ListItem button>
+    {/* <ListItem button>
       <ListItemIcon>
         <AssignmentIcon />
       </ListItemIcon>
       <ListItemText primary="Year-end sale" />
-    </ListItem>
-    {/* <ListItem button>
-      <ModalComponent form={<CreateCluster />}></ModalComponent>
-      <ListItemText primary="Create Cluster" />
     </ListItem> */}
   </div>
 );

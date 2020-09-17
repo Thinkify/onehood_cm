@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./backend
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
+
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./frontend/onehoodcm
+    volumes:
+      - /app/node_modules
+      - ./frontend/onehoodcm:/app
+
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./middleware
+    volumes:
+      - /app/node_modules
+      - ./middleware:/app

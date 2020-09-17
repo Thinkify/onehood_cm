@@ -169,7 +169,7 @@ export default function CreateCluster(props) {
     }
 
     props.onPressButton();
-    props.onCreateCluster();
+    // props.onCreateCluster();
   };
 
   const getQuickDeploys = () => {

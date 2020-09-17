@@ -7,7 +7,7 @@ class ImageResolver extends Component {
       <img
         src={this.props.image}
         width="30"
-        height="20"
+        height="30"
         mode="fit"
         alt="cloud provider logo"
       />

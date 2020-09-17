@@ -26,6 +26,9 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ModalComponent from "./ModalComponent";
 import Snackbar from "@material-ui/core/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
+import Button from "@material-ui/core/Button";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import { Link as RouterLink } from "react-router-dom";
 
 function Copyright() {
   return (
@@ -45,6 +48,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+    justifyContent: "space-between",
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
@@ -106,6 +110,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     height: "100vh",
     overflow: "auto",
+    backgroundColor: "whitesmoke",
   },
   container: {
     paddingTop: theme.spacing(4),
@@ -196,13 +201,12 @@ export default function Dashboard() {
           >
             OneHood
           </Typography>
-
           {/* <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
             </Badge>
           </IconButton> */}
-          <ModalComponent onSubmit={getClusterData} />
+
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <AccountCircleIcon />
