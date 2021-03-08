@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import GitData from "./components/GitData";
+import BackendDashboard from "./components/BackendDashboard";
 function App() {
   return (
     <Router>
@@ -14,6 +15,9 @@ function App() {
         </Route>
         <Route path="/releasemanagement">
           <GitData />
+        </Route>
+        <Route path="/backendDashboard">
+          <BackendDashboard/>
         </Route>
         <Route path="/">
           {/* <Home /> */}

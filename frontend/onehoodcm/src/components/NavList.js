@@ -14,6 +14,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import CloseIcon from "@material-ui/icons/Close";
 import Button from "@material-ui/core/Button";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import DashboardIcon from '@material-ui/icons/Dashboard';
 import { Link as RouterLink } from "react-router-dom";
 
 import GTranslateTwoToneIcon from "@material-ui/icons/GTranslateTwoTone";
@@ -22,6 +23,7 @@ import DockIcon from "@material-ui/icons/Dock";
 import WbCloudyIcon from "@material-ui/icons/WbCloudy";
 
 import dockerlogo from "../asset/dockerlogo.png";
+import BackendDashboard from "./BackendDashboard";
 
 export const mainListItems = (
   <div>
@@ -87,6 +89,25 @@ export const secondaryListItems = (
         </Button>
       </RouterLink>
     </ListItem>
+    <ListItem button>
+      {/* <ListItemIcon>
+        <AssignmentIcon />
+      </ListItemIcon>
+      <ListItemText primary="Last quarter" /> */}
+      <RouterLink to="/backendDashboard" style={{ textDecoration: "none" }}>
+        <Button
+          size="small"
+          variant="contained"
+          color="secondary"
+          startIcon={<DashboardIcon />}
+          style={{ width: "180px" }}
+          // onClick={handleSubmit}
+        >
+          Dashboard
+        </Button>
+      </RouterLink>
+    </ListItem>
+
     {/* <ListItem button>
       <ListItemIcon>
         <AssignmentIcon />
